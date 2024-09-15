@@ -1,0 +1,25 @@
+.wraperContact {
+    display: flex;
+    padding: 16px;
+    border-radius: 8px;
+    justify-content: space-between;
+    border: solid 1px black;
+    width: 300px
+    
+}
+
+.wraperInfo {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.btn {
+    background-color:cornflowerblue;
+    color: #0c0c0c; 
+    cursor: pointer;
+    margin: 10px;
+    border: none;
+    border-radius: 4px;
+    padding: 10px 6px; 
+}

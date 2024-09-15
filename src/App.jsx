@@ -1,62 +1,57 @@
-
-import { useState, useEffect } from 'react';
-import Description from './components/Description/Description';
-import Options from './components/Options/Options';
-import Feedback from './components/Feedback/Feedback';
-import Notification from './components/Notification/Notification';
+import { useState, useEffect } from "react"
+import SearchBox from "./components/SearchBox/SearchBox"
+import ContactList from "./components/ContactList/ContactList"
+import ContactForm from "./components/ContactForm/ContactForm"
 
 function App() {
-  const [feedback, setFeedback] = useState(() => {
-    const feedbackFromLocalStorage = window.localStorage.getItem('reviews');
-    if (feedbackFromLocalStorage !== null) {
-      return JSON.parse(feedbackFromLocalStorage);
+  
+  const [contacts, setContacts] = useState(() => {
+    const contactsFromLocalStorage = window.localStorage.getItem("contacts");
+    if (contactsFromLocalStorage !== null) {
+      return JSON.parse(contactsFromLocalStorage)
     }
-    return {
-      good: 0,
-      neutral: 0,
-      bad: 0,
-    };
-  });
+    return (
+      [
+        {id: 'id-1', name: 'Rosie Simpson', number: '459-12-56'},
+        {id: 'id-2', name: 'Hermione Kline', number: '443-89-12'},
+        {id: 'id-3', name: 'Eden Clements', number: '645-17-79'},
+        {id: 'id-4', name: 'Annie Copeland', number: '227-91-26'},
+      ]
+    )
+  }
+  )
 
-  const updateFeedback = (feedbackType) => {
-    setFeedback((prevFeedback) => ({
-      ...prevFeedback,
-      [feedbackType]: prevFeedback[feedbackType] + 1,
-    }));
-  };
+  const [query, setQuery] = useState("")
 
-  const resetFeedback = () => {
-    setFeedback({
-      good: 0,
-      neutral: 0,
-      bad: 0,
-    });
-  };
+  const   visibleContacts = contacts.filter((contact) => {
+    return contact.name.toLowerCase().includes(query.toLowerCase())
+  })
 
-  const totalFeedback = feedback.good + feedback.neutral + feedback.bad;
+  const deleteContact = (contactId) => {
+    setContacts((prevContacts) => {
+      return prevContacts.filter((contact) => contact.id !== contactId);
+    }, [contacts])
+  }
+
+  const addContact = (newContact) => {
+    setContacts((prevContacts)=>{
+      return [...prevContacts, newContact]
+    })
+  }
 
   useEffect(() => {
-    window.localStorage.setItem('reviews', JSON.stringify(feedback));
-  }, [feedback]);
+    window.localStorage.setItem("contacts", JSON.stringify(contacts))
+  })
 
-  return (
-    <div>
-      <Description />
-      <Options
-        callback={updateFeedback}
-        hasFeedback={totalFeedback > 0}
-        reset={resetFeedback}
-      />
-      {totalFeedback > 0 ? (
-        <Feedback
-          reviews={feedback}
-          allFeedback={Math.round((feedback.good / totalFeedback) * 100)}
-        />
-      ) : (
-        <Notification />
-      )}
-    </div>
-  );
+    return (
+      <div>
+  <h1>Phonebook</h1>
+  <ContactForm adding={addContact}/>  
+  <SearchBox value={query} onSearch={setQuery}/>
+  <ContactList contacts={visibleContacts} onDelete={deleteContact}/>
+</div>
+
+    )
 }
 
-export default App;
+export default App
